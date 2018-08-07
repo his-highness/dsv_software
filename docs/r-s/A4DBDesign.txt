@@ -1,0 +1,49 @@
+Ans.1 – (a) production 
+              (b) projects
+Ans.2 – (a) director
+               (b) accounts 
+               (c) production 
+                (d) projects 
+Ans.3 – multiple departments (they work according to the requirements)
+Ans.4 – yes 
+Ans.5 – single
+Ans.6 – not particularly
+Ans.7 – (a) name 
+               (b) contractor name (other company name)
+               (c) in time 
+               (d) out time
+               (e) working hours
+               (f) daily wages(restricted to admin, only access to director)
+Ans.8 – yes (mechanical team, electrical team, store, purchase, etc)
+Ans.9 – (a) project code
+              (b) project name 
+              (c) start date 
+             (d) end date 
+Ans.10 – every projects have a separate head (designated head)
+Ans.11  - no
+Ans.12 – multiple ones
+Ans.13 – every single employee
+Ans.14 - every single employee
+Ans.15 – specific projects
+Ans.16 – project wise (per day)
+Ans.17 – 2 types of login 
+ Director 
+Admin
+Ans.18 – (a) director login – access to whole softwar
+                 (b) admin login – access to only for forward data entry (restrictions will be decided soon , after the designing of the software)
+Ans.19 – no 
+Ans.20 – site report – (a) daily report
+                                        (b) site name 
+                                    (c) expenses (many sub topics are to be covered)                                   (d) manpower details (many sub topics are to be covered)
+(e) machinery (many sub topics ……….)
+
+
+All the sub topics are given in 
+
+
+
+
+
+
+
+
