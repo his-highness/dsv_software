@@ -33,7 +33,7 @@
 	while($row = mysqli_fetch_row($result)) {
 		echo '<tr>';
 		echo '<td>'.$row[0].'</td><td>'.$row[1].'</td>';
-		echo "<td><a href=\"atten.php?p_c={$row[0]}\">Take Attendance</a></td>";
+		echo "<td><a href=\"atten.php?p_c={$row[0]}&p_n={$row[1]}\">Take Attendance</a></td>";
 		echo '</tr>';
 	}
 ?>
