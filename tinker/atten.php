@@ -25,23 +25,31 @@
 	$result = mysqli_query($dbc, $query);
 	// Table Header
 ?>
+		<form method="post" action="store.php">
 			<table border="1">
 				<thead>
 					<tr>
 						<th>Employee ID</th>
 						<th>Name</th>
 						<th>Contractor's Name</th>
+						<th>Present</th>
 					</tr>
 				</thead>
 				<tbody>
 <?php
 	
 	while($row=mysqli_fetch_row($result)) {
-		echo "<tr><td>{$row[0]}</td><td>{$row[1]}</td><td>{$row[2]}</td></tr>";
+		echo "<tr><td>{$row[0]}</td><td>{$row[1]}</td><td>{$row[2]}</td>";
+		echo "<td><input type='checkbox' name='present[]' value='{$row[0]}' /></td></tr>";
 	}
-
+	mysqli_close($dbc);
 ?>
 				</tbody>
 			</table>
+			<input type="hidden" name="date" value="<?php echo $date;?>" />
+			<input type="hidden" name="p_c" value="<?php echo $p_code;?>" />
+			<input type="submit" value="Save attendance" name="submit" />
+		</form>	
+		<a href="all_absent.php?p_code=<?php echo $p_code; ?>&date=<?php echo $date; ?>">All Absent</a>
 		</body>
 	</html>
