@@ -10,6 +10,8 @@
 		<body>
 			<h1>List of Ongoing Projects</h1>
 <?php
+	require_once('avail_for_atten.php');
+
 	$date = (int)implode("", explode("-", date_format(date_create(), 'Y-m-d')));
 
 	$dbc = mysqli_connect("localhost", "tester", "123456", "tinker_db");
@@ -18,7 +20,17 @@
 
 	$result = mysqli_query($dbc, $query) or (mysqli_info());
 
-	if($check=mysql_num_rows($result)) {
+	$available = array();
+
+	while($row=mysqli_fetch_row($result)) {
+		$status = avail_for_atten($row[0], $date);
+		if($status) {
+			$available[] = array($row[0], $row[1]);
+		}
+	}
+			
+	
+	if(sizeof($available)>0) {
 
 	// The Table Header
 ?>
@@ -36,23 +48,11 @@
 
 	// All the projects with running status
 	
-		while($row=mysqli_fetch_row($result)) {
-
-		$query1 = "SELECT * FROM emp_atten WHERE p_code = {$row[0]} AND dated = {$date}";
-
-		$query2 = "SELECT * FROM all_absent WHERE p_code = {$row[0]} AND dated = {$date}";
-
-		$result1 = mysqli_query($dbc, $query1) or die(mysqli_error());
-		$result2 = mysqli_query($dbc, $query2) or die(mysqli_error()); 
-
-			if (!($row1 = mysqli_fetch_row($result1)) && !($row2 = mysqli_fetch_row($result2))) {
-				
+		for($i=0; $i<sizeof($available); $i++) {	
 				echo '<tr>';
-				echo '<td>'.$row[0].'</td><td>'.$row[1].'</td>';
-				echo "<td><a href=\"atten.php?p_c={$row[0]}&p_n={$row[1]}\">Take Attendance</a></td>";
+				echo '<td>'.$available[$i][0].'</td><td>'.$available[$i][1].'</td>';
+				echo "<td><a href=\"atten.php?p_c={$available[$i][0]}&p_n={$available[$i][1]}\">Take Attendance</a></td>";
 				echo '</tr>';	
-
-			}
 		}
 ?>
 				</tbody>
