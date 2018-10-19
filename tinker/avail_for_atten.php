@@ -169,4 +169,66 @@
 			echo '<p>No projects to add costs, take employee <a href="projects.php">attendance</a> or add <a href="projects_timing.php">employee timings</a>.</p>';
 		}
 	}
+
+	/* Generates an array with a list of projects for which the attendance is taken but the timings have not been added */
+	function avail_for_time($db_conn, $date) {
+		// Attendance taken for projects for today's date
+		$pro_atten = "SELECT DISTINCT p_code FROM emp_atten WHERE dated = $date";
+
+		// Time taken for projects for today's date
+		$pro_time = "SELECT DISTINCT emp_atten.p_code FROM (( emp_atten INNER JOIN project ON emp_atten.p_code = project.p_code) INNER JOIN emp_time ON emp_atten.p_code = emp_time.p_code) WHERE emp_time.dated = $date AND project.status = 1";
+
+		$pro_atten_res = mysqli_query($db_conn, $pro_atten) or die('Project Attendance: '.mysqli_error($db_conn));
+
+		$pro_time_res = mysqli_query($db_conn, $pro_time) or die('Project Timing: '.mysqli_error($db_conn));
+
+		$pro_atten_arr = array(); // Store pro_atten_res result
+
+		$pro_time_arr = array(); // Store pro_time_res result
+
+		// Loop to store pro_atten_res result
+		while($row=mysqli_fetch_row($pro_atten_res)) {
+			$pro_atten_arr[] = $row[0];
+		}
+
+		// Loop to store pro_time_res result
+		while($row=mysqli_fetch_row($pro_time_res)) {
+			$pro_time_arr[] = $row[0];
+		}
+
+		// Array to store project code for adding costs
+		$pro_ta_arr = array();
+
+		if (sizeof($pro_time_arr)==0) {
+			$pro_ta_arr = $pro_atten_arr;
+		} else {
+			for($i=0;$i<sizeof($pro_atten_arr);$i++) {
+				if(!is_int(array_search($pro_atten_arr[$i], $pro_time_arr))) {
+					$pro_ta_arr[] = $pro_atten_arr[$i];
+				}
+			}		
+		}
+
+		return $pro_ta_arr;
+	}
+
+	/* Generates the list of projects available for adding costs, for the user to see */
+	function time_list_gen($db_conn, $p_code_arr) {
+
+		if(sizeof($p_code_arr)>0) {
+			// Getting project name details 
+			$pi_arr = pro_names($db_conn, $p_code_arr);
+
+			// Generating table header
+			$head_arr = array('Project Code', 'Project Name', 'Option');
+			table_head_gen($head_arr);
+
+			foreach ($pi_arr as $pi_arr_elem) {
+				echo "<tr><td>".$pi_arr_elem[0]."</td><td>".$pi_arr_elem[1]."</td><td><a href=\"time_store.php?p_c={$pi_arr_elem[0]}&p_n={$pi_arr_elem[1]}\">Add Timings</a></td></tr>";
+			}
+
+		} else {
+			echo '<p>No projects to add timings, take employee <a href="projects.php">attendance</a>, or add <a href="projects_cost.php">employee costs</a>.</p>';
+		}
+	}
 ?>
