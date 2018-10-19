@@ -231,4 +231,76 @@
 			echo '<p>No projects to add timings, take employee <a href="projects.php">attendance</a>, or add <a href="projects_cost.php">employee costs</a>.</p>';
 		}
 	}
+
+	/* Generates an array with employee details: Id, Name, Contractor's name, while taking Project code as parameter */
+	function emp_det_gen($db_conn, $pro_code) {
+		
+		$query = "SELECT employee.e_id, employee.name, employee.cont_name FROM employee INNER JOIN on_project ON employee.e_id = on_project.emp_id WHERE on_project.p_code = $pro_code";
+
+		$result = mysqli_query($db_conn, $query) or die("emp_det_arr function: ".mysqli_error($db_conn));
+
+		$arr = array();
+
+		while($row=mysqli_fetch_row($result)) {
+			$arr[] = array($row[0], $row[1], $row[2]);
+		}
+
+		return $arr;
+	}
+
+	/* Generating attendance form for the users, for taking employee attendance */
+	function gen_atten_form($emp_det_arr, $pro_code, $date) {
+?>
+		<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" >
+<?php
+		// Generating table header
+		$head_arr = array('Employee ID', 'Name', 'Contractor\'s Name', 'Present');
+		table_head_gen($head_arr);
+
+		foreach ($emp_det_arr as $emp_elem) {
+			echo "<tr><td>{$emp_elem[0]}</td><td>{$emp_elem[1]}</td><td>{$emp_elem[2]}</td><td><input type='checkbox' name='present[]' value='{$emp_elem[0]}' /></td></tr>";
+		}
+
+?>
+				</tbody>
+			</table>
+			<input type="hidden" name="date" value="<?php echo $date;?>" />
+			<input type="hidden" name="p_c" value="<?php echo $pro_code;?>" />
+			<input type="submit" value="Save attendance" name="submit" />
+		</form>	
+		<a href="all_absent.php?p_code=<?php echo $pro_code; ?>&date=<?php echo $date; ?>">All Absent</a>
+<?php				
+	}
+
+	/* Storing attendance for the employees present on a particular day, taking db_conn, an array filled with present emp_id, pro_code and date as parameters */
+	function store_atten($db_conn, $emp_pre_arr, $pro_code, $date) {
+		
+		if(sizeof($emp_pre_arr)>0) {
+			/* Formation of the query, instead of multiple queries, a single query is executed to store attendance */ 
+
+			$query = "INSERT INTO emp_atten VALUES";
+
+			for($i=0;$i<sizeof($emp_pre_arr);$i++) {
+				$pv = (int)$emp_pre_arr[$i];
+				$query .= " ($pv, $pro_code, $date)";
+				if($i < sizeof($emp_pre_arr) - 1) {
+					$query .= ",";
+				}
+			}
+			$query .= ";";
+
+			$result = mysqli_query($db_conn, $query) or die('store_atten function: '.mysqli_error($db_conn));
+
+			if($result) {
+				echo "<h3>Attendance stored successfully</h3>";
+				echo "<p><a href='projects.php'>Take attendance for another project</a><p>";
+				echo "<p><a href='projects_cost.php'>Add costs and timings</a></p>";
+			} else {
+				echo "<h4>Error saving in the database, please try again or contact the system administrator</h4>";
+			}
+		} else {
+			echo '<p>Error: Please choose at least one employee for taking attendance.</p>';
+			echo '<a href="projects.php">Go back to projects</a>';
+		}
+	}
 ?>
