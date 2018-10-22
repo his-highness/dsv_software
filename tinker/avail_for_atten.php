@@ -272,6 +272,7 @@
 <?php				
 	}
 
+	
 	/* Storing attendance for the employees present on a particular day, taking db_conn, an array filled with present emp_id, pro_code and date as parameters */
 	function store_atten($db_conn, $emp_pre_arr, $pro_code, $date) {
 		
@@ -303,4 +304,103 @@
 			echo '<a href="projects.php">Go back to projects</a>';
 		}
 	}
+
+	
+	/* Get the costs of breakfast, lunch, dinner and transportation, in an array */
+	function get_total($db_conn, $pro_code, $date) {
+		$query = "SELECT SUM(bf), SUM(lc), SUM(dn), SUM(tn) FROM emp_cost WHERE p_code = {$pro_code} AND dated = {$date}";
+
+		$result = mysqli_query($db_conn, $query) or die('get_total function: ' . mysqli_error($db_conn));
+
+		$arr = array();
+		$row = mysqli_fetch_row($result);
+		foreach($row as $cost) {
+			$arr[] = $cost;
+		}
+
+		return $arr;
+	}
+
+	
+	/* Get the cost of the food for a particular project code and date */
+	function get_food_cost($db_conn, $pro_code, $date) {
+		
+		$total = get_total($db_conn, $pro_code, $date);
+		
+		$cost = 0;
+
+		for($i=0;$i<3;$i++) {
+			$cost += $total[$i];
+		}
+
+		return $cost;
+	}
+
+	
+	/* Get the total cost by the employee for the day */
+	function get_total_cost($db_conn, $pro_code, $date) {
+
+		$total = get_total($db_conn, $pro_code, $date);
+
+		$total_cost = 0;
+
+		foreach($total as $cost) {
+			$total_cost += $cost;
+		}
+
+		return $total_cost;
+	}
+
+
+	/* Get the list of running projects */
+	function run_pro($db_conn, $date = "" ) {
+		$query = "SELECT p_code, name FROM project WHERE status = 1";
+
+		$result = mysqli_query($db_conn, $query) or die('run_pro function: ' . mysqli_error($db_conn));
+
+		$arr = array();
+
+		while($row=mysqli_fetch_array($result)) {
+			$arr[] = array($row[0], $row[1]);
+		}
+
+		return $arr;
+	}
+
+	/* Generate form for viewing the project details */
+	function gen_view_form($running_project_array, $error) {
+		if($error) {
+			echo '<p>Please fill all fields with valid values</p>';
+		}
+?>			
+		<form method="get" action="view_emp_cost.php">
+			<label for="pro_code">Project Code</label>
+			<select name="pro_code">
+				<option value="none">Choose Project</option>
+<?php
+	foreach($running_project_array as $pro_det) {
+		echo "<option value='{$pro_det[0]}'>{$pro_det[1]}</option>";
+	}	
 ?>
+			</select>
+
+			<label for="dated">Date</label>
+			<input type="date" name="dated" />
+
+			<input type="submit" name="submit" value="View Details" />
+		</form>
+<?php		
+	}
+
+	/* Get project detail from database */
+	function get_pro_det($db_conn, $pro_code, $detail) {
+		$query = "SELECT $detail FROM project WHERE p_code = {$pro_code}";
+
+		$result = mysqli_query($db_conn, $query) or die('get_pro_det function: '.mysqli_error($db_conn));
+
+		$row = mysqli_fetch_array($result);
+
+		return $row[0];
+	}
+
+
