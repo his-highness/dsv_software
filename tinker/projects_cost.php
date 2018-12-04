@@ -12,14 +12,14 @@
 
 	$date = (int)implode("", explode("-", date_format(date_create(), 'Y-m-d')));
 
-	$dbc = mysqli_connect('localhost', 'tester', '123456', 'tinker_db') or die(mysqli_error());
+	$dbc = mysqli_connect('localhost',  "root", "", 'tinker_db') or die(mysqli_error());
 
 	// An array with pro codes for available projects
 	$pro_ca_arr = avail_for_cost($dbc, $date);
 
 	// Generates a list, for the users to see
 	cost_list_gen($dbc, $pro_ca_arr);
-		
+
 	mysqli_close($dbc);
 ?>
 		</body>

@@ -15,7 +15,7 @@
 	$date_fancy = date_format(date_create(), "d M, Y");
 	$date = date_format(date_create(), "Y-m-d");
 
-	$dbc = mysqli_connect("localhost", "tester", "123456", "tinker_db") or die("Error connecting to the database - 1");
+	$dbc = mysqli_connect("localhost",  "root", "", "tinker_db") or die("Error connecting to the database - 1");
 
 	if (isset($_GET['p_c']) && isset($_GET['p_n'])) {
 	// Present day Date, Project code and Project name
@@ -28,7 +28,7 @@
 	// Generate the array containing employee details
 	$arr = emp_det_gen($dbc, $p_code);
 
-	// Generate a form for taking attendance 
+	// Generate a form for taking attendance
 	gen_atten_form($arr, $p_code, $date);
 
 	} else if (isset($_POST['submit'])) {
@@ -38,8 +38,8 @@
 
 		// Storing the employee attendance in db
 		store_atten($dbc, $present, $p_code, $date);
-		
+
 	}
-?>		
+?>
 		</body>
 	</html>

@@ -9,25 +9,25 @@
 <?php
 	require_once('avail_for_atten.php');
 
-	$dbc = mysqli_connect('localhost', 'tester', '123456', 'tinker_db') or die(mysqli_error($dbc));
+	$dbc = mysqli_connect('localhost',  "root", "", 'tinker_db') or die(mysqli_error($dbc));
 
 	$run_pro_arr = run_pro($dbc);
 
 	if(isset($_GET['submit'])) {
 		if((isset($_GET['pro_code']) && $_GET['pro_code']!='none') && (isset($_GET['dated']) && ($_GET['dated']!=""))) {
 			$head_arr = array('Amenity', 'Cost');
-			
+
 			$date=(int)implode("",explode("-", $_GET['dated']));
-			
+
 			$total = get_total($dbc, $_GET['pro_code'], $date);
-			
+
 			$tot_cost = get_total_cost($dbc, $_GET['pro_code'], $date);
 			echo "<h1>".get_pro_det($dbc, $_GET['pro_code'], 'name')."</h1>";
 			echo "<h2>Project Code: ". $_GET['pro_code']."</h2>";
 			echo "<h3>".date_format(date_create($_GET['dated']), "d M, Y")."</h3>";
 
 			table_head_gen($head_arr);
-?>	
+?>
 					<tr>
 						<td>Breakfast</td>
 						<td><?php echo $total[0]; ?></td>
@@ -50,7 +50,7 @@
 					</tr>
 				</tbody>
 			</table>
-<?php			
+<?php
 		} else {
 			gen_view_form($run_pro_arr, True);
 		}
@@ -58,6 +58,6 @@
 		gen_view_form($run_pro_arr, False);
 	}
 
-?>			
+?>
 		</body>
 	</html>

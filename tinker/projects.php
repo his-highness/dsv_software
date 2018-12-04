@@ -13,14 +13,14 @@
 	require_once('avail_for_atten.php');
 
 	$date = (int)implode("", explode("-", date_format(date_create(), 'Y-m-d')));
-	
-	$dbc = mysqli_connect("localhost", "tester", "123456", "tinker_db");
+
+	$dbc = mysqli_connect("localhost", "root", "", "tinker_db");
 
 	// Generates an array with the details for available projects
-	$available = avail_arr_gen($dbc, $date);		
-	
+	$available = avail_arr_gen($dbc, $date);
+
 	mysqli_close($dbc);
-	
+
 	// Generates a list of available projects for the users to see
 	pro_list_gen($available);
 

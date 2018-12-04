@@ -22,7 +22,7 @@
 			echo '<p>Please fill all the fields, and try again</p>';
 		}
 
-		$dbc = mysqli_connect('localhost', 'tester', '123456', 'tinker_db') or die(mysqli_error());
+		$dbc = mysqli_connect('localhost', "root", "", 'tinker_db') or die(mysqli_error());
 
 		$query = "SELECT employee.e_id, employee.name, employee.cont_name FROM employee INNER JOIN emp_atten ON employee.e_id = emp_atten.emp_id WHERE emp_atten.p_code = {$p_code} AND emp_atten.dated = {$date_query}";
 
@@ -32,7 +32,7 @@
 		$ei_arr = array();
 
 ?>
-			<form method="post" action="time_store.php">  
+			<form method="post" action="time_store.php">
 				<table border="1">
 					<thead>
 						<tr>
@@ -46,7 +46,7 @@
 <?php
 		while($row=mysqli_fetch_row($result)) {
 			// Attribute name will have the following pattern
-			$it = 'it'.$row[0];			
+			$it = 'it'.$row[0];
 			$ot = 'ot'.$row[0];
 
 			echo "<tr><td>$row[1]</td><td>$row[2]</td>";
@@ -61,9 +61,9 @@
 				<input type="hidden" name="p_c" value="<?php echo $p_code; ?>" />
 				<input type="hidden" name="p_n" value="<?php echo $p_name; ?>" />
 				<input type="submit" name="time_submit" value="Save Timings" />
-			</form>	
+			</form>
 <?php
-	
+
 	}
 
 	// When the form is submitted after adding costs
@@ -84,12 +84,12 @@
 			if(empty($_POST[$it])) {
 				$all_filled = false;
 			}
-			
+
 			if(empty($_POST[$ot])) {
 				$all_filled = false;
 			}
 		}
-		
+
 		// If all the fields are not filled, redirect back
 		// to the adding costs form
 		if(!$all_filled) {
@@ -100,7 +100,7 @@
 
 			$url .= "&{$it}={$_POST[$it]}&{$ot}={$_POST[$ot]}";
 
-		}	
+		}
 			header("Location: $url");
 			exit();
 		} else {
@@ -108,7 +108,7 @@
 
 			$ts_query = "INSERT INTO emp_time VALUES ";
 
-			// Building the query to save the costs 
+			// Building the query to save the costs
 			for($i=0;$i<sizeof($ei_arr);$i++) {
 				$it = (string)'it'.$ei_arr[$i];
 				$ot = (string)'ot'.$ei_arr[$i];
@@ -128,9 +128,9 @@
 			} else {
 				echo "<p>Operation failed, please try again</p><a href=\"timing_store.php?p_c={$p_code}&p_n={$p_name}\">Go back</a>";
 			}
-		} 				
+		}
 	}
-		
+
 	mysqli_close($dbc);
 ?>
 

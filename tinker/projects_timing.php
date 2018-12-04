@@ -12,7 +12,7 @@
 
 	$date = (int)implode("", explode("-", date_format(date_create(), 'Y-m-d')));
 
-	$dbc = mysqli_connect('localhost', 'tester', '123456', 'tinker_db') or die(mysqli_error());
+	$dbc = mysqli_connect('localhost',  "root", "", 'tinker_db') or die(mysqli_error());
 
 	// Getting the list of project codes availble for time addition
 	$pro_ta_arr = avail_for_time($dbc, $date);
